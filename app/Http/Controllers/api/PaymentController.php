@@ -22,7 +22,6 @@ class PaymentController extends Controller
     }
     public function store(Request $request)
     {
-
         // get data penjualan
         $grandtotal = DB::table('penjualans')->where('id', $request->penjualan_id)->first();
 
@@ -44,13 +43,16 @@ class PaymentController extends Controller
         }
         $totalpayment = round($request->payment) + $sumgrand;
 
-        $date = str_replace('/', '-', $request->tanggal);
+        $date = str_replace('/', '-', date("Y/m/d"));
         $newDate = date("Y-m-d", strtotime($date));
 
-        if (intval($payment->grand_total == $grandtotal->grand_total)) {
-            return response()->json([
-                "response" => "sudah lunas"
-            ], 200);
+        if ($payment) {
+
+            if (intval($payment->grand_total == $grandtotal->grand_total)) {
+                return response()->json([
+                    "response" => "sudah lunas"
+                ], 200);
+            }
         }
 
         if (intval($totalpayment > $grandtotal->grand_total)) {
